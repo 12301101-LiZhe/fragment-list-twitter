@@ -31,7 +31,7 @@ public class MainActivity extends Activity implements FirstFragment.OnFragmentIn
    // name of SharedPreferences XML file that stores the saved searches 
     public static final String SEARCHES = "searches";
 
-    public void onFragmentInteraction(Uri uri){
+    public void transferToSecondFragment(Uri uri){
 
     }
    
@@ -284,6 +284,24 @@ public class MainActivity extends Activity implements FirstFragment.OnFragmentIn
 
    // ADDED to set up the ListFragment
    public ArrayAdapter<String> getAdapter(){return adapter;}
+
+    @Override
+    public void onBackPressed() {
+    if (getFragmentManager().getBackStackEntryCount() > 0) {
+        getFragmentManager().popBackStack();
+    } else {
+        super.onBackPressed();
+    }
+    }
+
+    @Override
+    public void transferToSecondFragment(String url) {
+    getFragmentManager().beginTransaction()
+       .replace(R.id.fragment_holder, SecondFragment.newInstance(url))
+       .addToBackStack(null)
+       .commit();
+    }
+
 
 } // end class MainActivity
 

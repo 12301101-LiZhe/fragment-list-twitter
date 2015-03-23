@@ -2,7 +2,6 @@ package com.deitel.twittersearches;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -10,11 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-
-import com.deitel.twittersearches.R;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +30,14 @@ public class FirstFragment extends ListFragment {
     }
 
     @Override
+   public void onActivityCreated(Bundle savedState) {
+        super.onActivityCreated(savedState);
+        MainActivity pActivity = (MainActivity) getActivity();
+        getListView().setOnItemLongClickListener(pActivity.getOnItemLongClickListener());
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         MainActivity pActivity = (MainActivity) getActivity();
@@ -43,10 +47,18 @@ public class FirstFragment extends ListFragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    /*public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.transferToSecondFragment(uri);
         }
+    }*/
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id){
+        String tag = (String) ((TextView) v).getText();
+        if (mListener != null) {
+            mListener.transferToSecondFragment(tag);
+        }
+
     }
 
     @Override
@@ -78,7 +90,7 @@ public class FirstFragment extends ListFragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void transferToSecondFragment(String url);
     }
 
 }
