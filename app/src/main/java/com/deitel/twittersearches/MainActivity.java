@@ -26,16 +26,20 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class MainActivity extends Activity
+public class MainActivity extends Activity implements FirstFragment.OnFragmentInteractionListener
 {
    // name of SharedPreferences XML file that stores the saved searches 
-   private static final String SEARCHES = "searches";
+    public static final String SEARCHES = "searches";
+
+    public void onFragmentInteraction(Uri uri){
+
+    }
    
-   private EditText queryEditText; // EditText where user enters a query
-   private EditText tagEditText; // EditText where user tags a query
-   private SharedPreferences savedSearches; // user's favorite searches
-   private ArrayList<String> tags; // list of tags for saved searches
-   private ArrayAdapter<String> adapter; // binds tags to ListView
+    private EditText queryEditText; // EditText where user enters a query
+    private EditText tagEditText; // EditText where user tags a query
+    public SharedPreferences savedSearches; // user's favorite searches
+    private ArrayList<String> tags; // list of tags for saved searches
+    private ArrayAdapter<String> adapter; // binds tags to ListView
    
    // SOME Changes _ called when MainActivity is first created
    @Override
@@ -49,21 +53,26 @@ public class MainActivity extends Activity
       tagEditText = (EditText) findViewById(R.id.tagEditText);
       
       // get the SharedPreferences containing the user's saved searches 
-      savedSearches = getSharedPreferences(SEARCHES, MODE_PRIVATE); 
+      savedSearches = getSharedPreferences(SEARCHES, MODE_PRIVATE);
 
       // store the saved tags in an ArrayList then sort them
       tags = new ArrayList<String>(savedSearches.getAll().keySet());
-      Collections.sort(tags, String.CASE_INSENSITIVE_ORDER); 
+      Collections.sort(tags, String.CASE_INSENSITIVE_ORDER);
       
       // create ArrayAdapter and use it to bind tags to the ListView
       adapter = new ArrayAdapter<String>(this, R.layout.list_item, tags);
       // MOVE to ListFragment _ setListAdapter(adapter);
+
       
       // register listener to save a new or edited search 
       ImageButton saveButton = 
          (ImageButton) findViewById(R.id.saveButton);
       saveButton.setOnClickListener(saveButtonListener);
 
+       getFragmentManager()
+               .beginTransaction()
+               .add(R.id.fragment_holder, new FirstFragment())
+               .commit();
       // MOVE to ListFragment _ register listener that searches Twitter when user touches a tag
       //getListView().setOnItemClickListener(itemClickListener);
       
@@ -81,14 +90,15 @@ public class MainActivity extends Activity
          if (queryEditText.getText().length() > 0 &&
             tagEditText.getText().length() > 0)
          {
-            addTaggedSearch(queryEditText.getText().toString(), 
-               tagEditText.getText().toString());
+            addTaggedSearch(queryEditText.getText().toString(),
+                    tagEditText.getText().toString());
             queryEditText.setText(""); // clear queryEditText
             tagEditText.setText(""); // clear tagEditText
             
             ((InputMethodManager) getSystemService(
                Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-               tagEditText.getWindowToken(), 0);  
+                    tagEditText.getWindowToken(), 0);
+
          } 
          else // display message asking user to provide a query and a tag
          {
